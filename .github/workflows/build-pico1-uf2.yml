@@ -1,0 +1,45 @@
+name: Build Pico 1 UF2
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "Pico-GB-master/**"
+      - ".github/workflows/build-pico1-uf2.yml"
+  push:
+    branches:
+      - "**"
+    paths:
+      - "Pico-GB-master/**"
+      - ".github/workflows/build-pico1-uf2.yml"
+
+jobs:
+  build-pico1:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Pico-GB-master
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PlatformIO
+        run: pip install platformio
+
+      - name: Build Pico 1 UF2
+        run: pio run -e pico
+
+      - name: Prepare UF2 artifact
+        run: cp .pio/build/pico/firmware.uf2 .pio/build/pico/pico-gb-pico1.uf2
+
+      - name: Upload UF2 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pico-gb-pico1-uf2
+          path: Pico-GB-master/.pio/build/pico/pico-gb-pico1.uf2
+          if-no-files-found: error
