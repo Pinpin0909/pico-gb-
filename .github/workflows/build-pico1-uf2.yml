@@ -13,6 +13,9 @@ on:
       - "Pico-GB-master/**"
       - ".github/workflows/build-pico1-uf2.yml"
 
+permissions:
+  contents: read
+
 jobs:
   build-pico1:
     runs-on: ubuntu-latest
